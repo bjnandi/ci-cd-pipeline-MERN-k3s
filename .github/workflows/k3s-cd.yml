@@ -1,0 +1,38 @@
+name: K3s CD Pipeline on AWS
+
+on:
+  workflow_run:
+    workflows: ["Docker CI for Docker Hub Pipeline"]
+    types:
+      - completed
+
+# on:
+#   push:
+#     branches:
+#       - main
+      
+
+jobs:
+  ec2-cd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into Bastion host instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.MASTER_NODE }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+
+          proxy_host: ${{ secrets.EC2_HOST }}
+          proxy_username: ${{ secrets.EC2_USERNAME }}
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_port: 22
+
+          script: |  
+
+            sudo kubectl set image deployment/client client=bjnandi/ci-cd-mern-k3s-frontend:v1.0.$((${{github.run_number }}))
+            sudo kubectl set image deployment/server server=bjnandi/ci-cd-mern-k3s-backend:v1.0.$((${{github.run_number }}))
+            # sudo kubectl set image deployment/server server=bjnandi/ci-cd-mern-k3s-backend:v1.0.$((${{github.run_number }}-1))
+
