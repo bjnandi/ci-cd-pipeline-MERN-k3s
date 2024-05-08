@@ -32,8 +32,8 @@ jobs:
 
           script: |  
 
-            sudo kubectl set image deployment/client client=bjnandi/ci-cd-mern-k3s-frontend:v1.0.$((${{github.run_number }}))
-            sudo kubectl set image deployment/server server=bjnandi/ci-cd-mern-k3s-backend:v1.0.$((${{github.run_number }}))
-            
+            sudo kubectl set image deployment/client client=bjnandi/ci-cd-mern-k3s-frontend:v1.0.${{github.run_number }}
+            sudo kubectl set image deployment/server server=bjnandi/ci-cd-mern-k3s-backend:v1.0.${{github.run_number }}
+
             # sudo kubectl set image deployment/server server=bjnandi/ci-cd-mern-k3s-backend:v1.0.$((${{github.run_number }}-1))
 
